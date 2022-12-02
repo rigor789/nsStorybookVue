@@ -61,7 +61,12 @@ function updateDeepLink(story: any, targetPlatform: "android" | "ios"): void {
   });
   const newAppUrl = getFullDeepLinkUrl(deepLinkBaseUrl, story);
   console.log(newAppUrl);
-  // controller.openDeepLink(newAppUrl);
+
+  try {
+    controller.openDeepLink(newAppUrl);
+  } catch(err) {
+    // ignore
+  }
 }
 
 function getFullDeepLinkUrl(

@@ -62,7 +62,12 @@ function updateDeepLink(story, targetPlatform) {
     });
     var newAppUrl = getFullDeepLinkUrl(deepLinkBaseUrl, story);
     console.log(newAppUrl);
-    // controller.openDeepLink(newAppUrl);
+    try {
+        controller.openDeepLink(newAppUrl);
+    }
+    catch (err) {
+        // ignore
+    }
 }
 function getFullDeepLinkUrl(baseDeepLinkUrl, storyParams) {
     console.log(JSON.stringify(storyParams));

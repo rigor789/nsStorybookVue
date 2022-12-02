@@ -1,11 +1,34 @@
 import Vue from "nativescript-vue";
-
+import { StorybookDevice } from "./storybook.ios";
 import { toId } from "@storybook/csf";
 
 const storiesMeta = new Vue({
   data: {
     storyMap: new Map(),
     stories: [],
+    current: null,
+    currentComponent: null
+  },
+  watch: {
+    current() {
+      console.log("CURRENT CHANGE");
+      if (!this.current) {
+        return;
+      }
+
+      console.log(this.current);
+      // @ts-ignore
+      const id = this.current.storyId;
+
+      console.log(id, this.storyMap.has(id));
+
+      if (this.storyMap.has(id)) {
+        const meta = this.storyMap.get(id);
+        console.log(meta);
+
+        this.currentComponent = meta.component;
+      }
+    },
   },
 });
 
@@ -18,36 +41,36 @@ stories.keys().forEach((key: string) => {
   const storyMeta = data.default;
   const exports = Object.keys(data).filter((name) => name !== "default");
 
-  console.log({
-    title: storyMeta.title,
-    exports: exports.map((name) => {
-      return {
-        id: toId(storyMeta.title, name),
-        name,
-      };
-    }),
+  const storiesInFile: any = exports.map((name: string) => {
+    return {
+      id: toId(storyMeta.title, name),
+      name,
+    };
   });
 
-  // console.log("ID:", id);
-  // storiesMeta.storyMap.set()
-  (storiesMeta.stories as any).push(storyMeta.component);
+  storiesInFile.forEach((story: any) => {
+    storiesMeta.storyMap.set(story.id, storyMeta);
+  });
 });
 
-console.log();
+StorybookDevice.init((story: any) => {
+  console.log("SWITCH STORY", story);
+  storiesMeta.current = story;
+});
 
 new Vue({
   render: (h) =>
     h({
       computed: {
         currentComponent() {
-          return storiesMeta.stories[0];
+          return storiesMeta.currentComponent;
         },
       },
       template: `
         <GridLayout rows="auto, *">
           <Label text="Storybook entry!"/>
           <ContentView row="1" backgroundColor="#ccc">
-            <component :is="currentComponent" />
+            <component v-if="currentComponent" :is="currentComponent" />
           </ContentView>
         </GridLayout>
       `,
