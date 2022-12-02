@@ -6,7 +6,7 @@ module.exports = {
     // "@storybook/addon-essentials",
     // "@storybook/addon-interactions",
     "@storybook/native-addon/dist/register.js",
-    "./custom/index.js"
+    "./custom/register.js"
   ],
   core: {
     builder: "webpack5",

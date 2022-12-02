@@ -1,6 +1,21 @@
-import { addons } from "@storybook/addons";
+import { addons, types } from "@storybook/addons";
 import { ControllerManager } from "@storybook/native-controllers";
-console.log("HERE")
+
+addons.register("NATIVESCRIPT", () => {
+  let isListening = false;
+  addons.add("STORYCHANGELISTENER", {
+    title: "STORYCHANGELISTENER",
+    type: types.TOOLEXTRA,
+    render() {
+      if (!isListening) {
+        listenToStoryChange("ios");
+        isListening = true;
+      }
+
+      return null as any;
+    },
+  });
+});
 
 function listenToStoryChange(targetPlatform) {
   addons.ready().then((channel) => {
@@ -26,8 +41,6 @@ function listenToStoryChange(targetPlatform) {
   });
 }
 
-listenToStoryChange("ios");
-
 function storyChange(story) {
   console.log("story change", story);
 
@@ -47,15 +60,14 @@ function updateDeepLink(story: any, targetPlatform: "android" | "ios"): void {
     baseUrl: deepLinkBaseUrl,
   });
   const newAppUrl = getFullDeepLinkUrl(deepLinkBaseUrl, story);
-  console.groupCollapsed("Generating deeplink");
-  console.log("newAppUrl", newAppUrl);
-  console.groupEnd();
-  controller.openDeepLink(newAppUrl);
+  console.log(newAppUrl);
+  // controller.openDeepLink(newAppUrl);
 }
 
 function getFullDeepLinkUrl(
   baseDeepLinkUrl: string,
   storyParams: Record<string, any>
 ): string {
+  console.log(JSON.stringify(storyParams));
   return baseDeepLinkUrl + "?" + btoa(JSON.stringify(storyParams));
 }

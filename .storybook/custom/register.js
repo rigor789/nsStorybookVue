@@ -13,7 +13,20 @@ var __assign = (this && this.__assign) || function () {
 exports.__esModule = true;
 var addons_1 = require("@storybook/addons");
 var native_controllers_1 = require("@storybook/native-controllers");
-console.log("HERE");
+addons_1.addons.register("NATIVESCRIPT", function () {
+    var isListening = false;
+    addons_1.addons.add("STORYCHANGELISTENER", {
+        title: "STORYCHANGELISTENER",
+        type: addons_1.types.TOOLEXTRA,
+        render: function () {
+            if (!isListening) {
+                listenToStoryChange("ios");
+                isListening = true;
+            }
+            return null;
+        }
+    });
+});
 function listenToStoryChange(targetPlatform) {
     addons_1.addons.ready().then(function (channel) {
         var currentStory = null;
@@ -31,7 +44,6 @@ function listenToStoryChange(targetPlatform) {
         });
     });
 }
-listenToStoryChange("ios");
 function storyChange(story) {
     console.log("story change", story);
     updateDeepLink(story, "ios");
@@ -49,11 +61,10 @@ function updateDeepLink(story, targetPlatform) {
         baseUrl: deepLinkBaseUrl
     });
     var newAppUrl = getFullDeepLinkUrl(deepLinkBaseUrl, story);
-    console.groupCollapsed("Generating deeplink");
-    console.log("newAppUrl", newAppUrl);
-    console.groupEnd();
-    controller.openDeepLink(newAppUrl);
+    console.log(newAppUrl);
+    // controller.openDeepLink(newAppUrl);
 }
 function getFullDeepLinkUrl(baseDeepLinkUrl, storyParams) {
+    console.log(JSON.stringify(storyParams));
     return baseDeepLinkUrl + "?" + btoa(JSON.stringify(storyParams));
 }

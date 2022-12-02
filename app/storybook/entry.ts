@@ -15,15 +15,22 @@ const stories = require.context("../", true, /\.stories\.js$/);
 stories.keys().forEach((key: string) => {
   console.log("STORY:", key);
   const data = stories(key);
-  const story = data.default;
+  const storyMeta = data.default;
+  const exports = Object.keys(data).filter((name) => name !== "default");
 
-  console.log("DATA:", story);
-
-  // const id = story.id ?? toId("story", story.title);
+  console.log({
+    title: storyMeta.title,
+    exports: exports.map((name) => {
+      return {
+        id: toId(storyMeta.title, name),
+        name,
+      };
+    }),
+  });
 
   // console.log("ID:", id);
   // storiesMeta.storyMap.set()
-  (storiesMeta.stories as any).push(story.component);
+  (storiesMeta.stories as any).push(storyMeta.component);
 });
 
 console.log();
