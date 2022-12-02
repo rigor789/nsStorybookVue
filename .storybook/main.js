@@ -1,14 +1,15 @@
 module.exports = {
-  stories: [
-    "../**/*.stories.js"
-  ],
+  stories: ["../**/*.stories.js"],
   addons: [
-    "@storybook/addon-links",
-    "@storybook/addon-essentials",
-    "@storybook/addon-interactions",
+    "@storybook/addon-controls",
+    // "@storybook/addon-links",
+    // "@storybook/addon-essentials",
+    // "@storybook/addon-interactions",
+    "@storybook/native-addon/dist/register.js",
+    "./custom/index.js"
   ],
   core: {
-    builder: 'webpack5',
+    builder: "webpack5",
   },
-  // "framework": "@storybook/vue"
+  framework: "@storybook/vue",
 };

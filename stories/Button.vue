@@ -3,8 +3,6 @@
 </template>
 
 <script>
-import './button.css';
-
 export default {
   name: 'my-button',
 

@@ -1,15 +1,16 @@
-import MyButton from './Button.vue';
+import MyButton from "./Button.vue";
+import "../.storybook/custom/index";
 
 // More on default export: https://storybook.js.org/docs/vue/writing-stories/introduction#default-export
 export default {
-  title: 'Example/Button',
+  title: "Example/Button",
   component: MyButton,
   // More on argTypes: https://storybook.js.org/docs/vue/api/argtypes
   argTypes: {
-    backgroundColor: { control: 'color' },
+    backgroundColor: { control: "color" },
     size: {
-      control: { type: 'select' },
-      options: ['small', 'medium', 'large'],
+      control: { type: "select" },
+      options: ["small", "medium", "large"],
     },
   },
 };
@@ -18,29 +19,29 @@ export default {
 const Template = (args, { argTypes }) => ({
   props: Object.keys(argTypes),
   components: { MyButton },
-  template: '<my-button @onClick="onClick" v-bind="$props" />',
+  template: '<my-button v-bind="$props" />',
 });
 
 export const Primary = Template.bind({});
 // More on args: https://storybook.js.org/docs/vue/writing-stories/args
 Primary.args = {
   primary: true,
-  label: 'Button',
+  label: "Button",
 };
 
 export const Secondary = Template.bind({});
 Secondary.args = {
-  label: 'Button',
+  label: "Button",
 };
 
 export const Large = Template.bind({});
 Large.args = {
-  size: 'large',
-  label: 'Button',
+  size: "large",
+  label: "Button",
 };
 
 export const Small = Template.bind({});
 Small.args = {
-  size: 'small',
-  label: 'Button',
+  size: "small",
+  label: "Button",
 };
