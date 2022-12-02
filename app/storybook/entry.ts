@@ -7,7 +7,7 @@ const storiesMeta = new Vue({
     storyMap: new Map(),
     stories: [],
     current: null,
-    currentComponent: null
+    currentComponent: null,
   },
   watch: {
     current() {
@@ -16,17 +16,23 @@ const storiesMeta = new Vue({
         return;
       }
 
-      console.log(this.current);
       // @ts-ignore
       const id = this.current.storyId;
-
-      console.log(id, this.storyMap.has(id));
 
       if (this.storyMap.has(id)) {
         const meta = this.storyMap.get(id);
         console.log(meta);
 
-        this.currentComponent = meta.component;
+        // @ts-ignore
+        this.currentComponent = {
+          id: meta.id,
+          component: meta.component,
+          args: {
+            ...meta.args,
+            // @ts-ignore
+            ...this.current.args,
+          },
+        };
       }
     },
   },
@@ -49,7 +55,11 @@ stories.keys().forEach((key: string) => {
   });
 
   storiesInFile.forEach((story: any) => {
-    storiesMeta.storyMap.set(story.id, storyMeta);
+    storiesMeta.storyMap.set(story.id, {
+      id: story.id,
+      component: storyMeta.component,
+      args: data[story.name].args,
+    });
   });
 });
 
@@ -69,9 +79,11 @@ new Vue({
       template: `
         <GridLayout rows="auto, *">
           <Label text="Storybook entry!"/>
-          <ContentView row="1" backgroundColor="#ccc">
-            <component v-if="currentComponent" :is="currentComponent" />
-          </ContentView>
+          <GridLayout row="1" backgroundColor="#fefefe" padding="16">
+            <ContentView horizontalAlignment="left" verticalAlignment="top">
+              <component v-if="currentComponent" :is="currentComponent.component" v-bind="currentComponent.args" :key="currentComponent.id" />
+            </ContentView>
+          </GridLayout>
         </GridLayout>
       `,
     }),
