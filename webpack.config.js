@@ -16,6 +16,8 @@ module.exports = (env) => {
         .add("@nativescript/core/bundle-entry-points")
         .add("./app/storybook/entry.ts");
 
+      config.module.rule("bundle").test(webpack.Utils.project.getProjectFilePath("./app/storybook/entry.ts"));
+
       if (webpack.Utils.platform.getPlatformName() === "android") {
         config
           .entry("bundle")

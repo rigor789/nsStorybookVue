@@ -12,7 +12,22 @@ var __assign = (this && this.__assign) || function () {
 };
 exports.__esModule = true;
 var addons_1 = require("@storybook/addons");
-var native_controllers_1 = require("@storybook/native-controllers");
+// import { ControllerManager } from "@storybook/native-controllers";
+function debounce(func, wait, immediate) {
+    if (immediate === void 0) { immediate = false; }
+    var timeout;
+    return function () {
+        var context = this, args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(function () {
+            timeout = null;
+            if (!immediate)
+                func.apply(context, args);
+        }, wait);
+        if (immediate && !timeout)
+            func.apply(context, args);
+    };
+}
 addons_1.addons.register("NATIVESCRIPT", function () {
     var isListening = false;
     addons_1.addons.add("STORYCHANGELISTENER", {
@@ -48,27 +63,34 @@ function storyChange(story) {
     console.log("story change", story);
     updateDeepLink(story, "ios");
 }
-function updateDeepLink(story, targetPlatform) {
-    var manager = new native_controllers_1.ControllerManager();
+var updateDeepLink = debounce(function (story, targetPlatform) {
+    // const manager = new ControllerManager();
     var context = targetPlatform;
-    var controller = manager.getController(context);
+    // const controller = manager.getController(context);
     var deepLinkBaseUrl = "sb-native://deep.link";
-    controller.updateConfig({
-        settings: {
-            device: targetPlatform
-        },
-        platform: targetPlatform,
-        baseUrl: deepLinkBaseUrl
-    });
+    // controller.updateConfig({
+    //   settings: {
+    //     device: targetPlatform,
+    //   },
+    //   platform: targetPlatform,
+    //   baseUrl: deepLinkBaseUrl,
+    // });
     var newAppUrl = getFullDeepLinkUrl(deepLinkBaseUrl, story);
     console.log(newAppUrl);
     try {
-        controller.openDeepLink(newAppUrl);
+        fetch("http://localhost:3000/", {
+            method: "POST",
+            body: JSON.stringify({
+                newAppUrl: newAppUrl,
+                story: story
+            })
+        });
+        // controller.openDeepLink(newAppUrl);
     }
     catch (err) {
         // ignore
     }
-}
+}, 1000);
 function getFullDeepLinkUrl(baseDeepLinkUrl, storyParams) {
     console.log(JSON.stringify(storyParams));
     return baseDeepLinkUrl + "?" + btoa(JSON.stringify(storyParams));

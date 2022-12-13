@@ -2,6 +2,8 @@ import Vue from "nativescript-vue";
 import { StorybookDevice } from "./storybook.ios";
 import { toId } from "@storybook/csf";
 
+import { getCurrent, registerCb } from "./test";
+
 const storiesMeta = new Vue({
   data: {
     storyMap: new Map(),
@@ -19,9 +21,11 @@ const storiesMeta = new Vue({
       // @ts-ignore
       const id = this.current.storyId;
 
+      console.log('switch to', id);
+
       if (this.storyMap.has(id)) {
         const meta = this.storyMap.get(id);
-        console.log(meta);
+        // console.log(meta);
 
         // @ts-ignore
         this.currentComponent = {
@@ -64,7 +68,12 @@ stories.keys().forEach((key: string) => {
 });
 
 StorybookDevice.init((story: any) => {
-  console.log("SWITCH STORY", story);
+  storiesMeta.current = story;
+});
+
+storiesMeta.current = getCurrent();
+
+registerCb((story: any) => {
   storiesMeta.current = story;
 });
 
