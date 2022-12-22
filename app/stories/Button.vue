@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import { Utils } from "@nativescript/core"
 export default {
   name: "my-button",
 
@@ -45,6 +46,7 @@ export default {
 
   methods: {
     onClick() {
+      console.log(Utils.SDK_VERSION);
       this.$emit("onClick");
     },
   },
